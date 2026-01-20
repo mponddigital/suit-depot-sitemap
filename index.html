@@ -1,0 +1,1144 @@
+import React, { useState, useMemo } from 'react';
+import { 
+  ChevronRight, 
+  ChevronDown, 
+  Search, 
+  Target, 
+  Maximize2, 
+  Minimize2,
+  TrendingUp,
+  Box,
+  CornerDownRight,
+  Zap,
+  BarChart4,
+  LayoutGrid,
+  ShoppingBag,
+  Filter,
+  Compass,
+  Layers
+} from 'lucide-react';
+
+/**
+ * EXHAUSTIVE SHOPIFY ARCHITECTURE v10.1
+ * DATA SOURCE: Rollup Hubs & Money Pages (Including Sizes)
+ * OPTIMIZATION: Normalized Gray/Grey clusters & collapsed redundant nesting.
+ */
+
+const hubs = [
+  {"path": "/men/suits/", "volume": 2791838570},
+  {"path": "/men/dress-shirts/", "volume": 2406419380},
+  {"path": "/men/shoes/", "volume": 530148900},
+  {"path": "/men/tuxedos/", "volume": 369720370},
+  {"path": "/men/pants-trousers/", "volume": 251978930},
+  {"path": "/women/suits/", "volume": 243848000},
+  {"path": "/men/blazers-sportcoats/", "volume": 185676420},
+  {"path": "/women/dress-shirts/", "volume": 154170770},
+  {"path": "/men/suits/formal/", "volume": 109188110},
+  {"path": "/men/pocket-squares/", "volume": 97520940},
+  {"path": "/men/dress-shirts/casual/", "volume": 95390360},
+  {"path": "/men/suits/black/", "volume": 74844190},
+  {"path": "/men/bow-ties/", "volume": 72230360},
+  {"path": "/men/ties-bowties/", "volume": 72190950},
+  {"path": "/men/dress-shirts/white/", "volume": 69545060},
+  {"path": "/men/suits/wedding/", "volume": 47679930},
+  {"path": "/men/shoes/casual/", "volume": 30329360},
+  {"path": "/men/suits/casual/", "volume": 22077220},
+  {"path": "/men/dress-shirts/yellow/", "volume": 21729370},
+  {"path": "/men/suits/blue/", "volume": 21686460},
+  {"path": "/men/vests/", "volume": 17535480},
+  {"path": "/men/belts/", "volume": 13580230},
+  {"path": "/women/tuxedos/", "volume": 13042010},
+  {"path": "/men/dress-shirts/black/", "volume": 12618290},
+  {"path": "/women/pants-trousers/", "volume": 12011260},
+  {"path": "/men/tuxedos/black/", "volume": 11760580},
+  {"path": "/men/dress-shirts/flannel/", "volume": 10423110},
+  {"path": "/men/suits/navy/", "volume": 10209350},
+  {"path": "/men/blazers-sportcoats/casual/", "volume": 9021610},
+  {"path": "/men/pants-trousers/corduroy/", "volume": 8538710},
+  {"path": "/men/pants-trousers/casual/", "volume": 8359320}
+];
+
+const moneyPages = [
+  { "path": "/men/suits/size/", "volume": 102330480 },
+  { "path": "/men/suits/orange/", "volume": 21042940 },
+  { "path": "/men/dress-shirts/blue/", "volume": 18162070 },
+  { "path": "/men/suits/size-42/", "volume": 14618640 },
+  { "path": "/men/suits/size-38/", "volume": 13400420 },
+  { "path": "/men/suits/size-36/", "volume": 13400420 },
+  { "path": "/men/suits/yellow/", "volume": 13388860 },
+  { "path": "/men/suits/grey/gray/", "volume": 13047580 },
+  { "path": "/men/dress-shirts/orange/", "volume": 12957790 },
+  { "path": "/women/suits/formal/", "volume": 12440880 },
+  { "path": "/men/suits/size-44/", "volume": 9745760 },
+  { "path": "/men/suits/size-40/", "volume": 9745760 },
+  { "path": "/men/ties-bowties/black/black-tie/", "volume": 9352020 },
+  { "path": "/men/dress-shirts/seersucker/", "volume": 8771580 },
+  { "path": "/women/suits/yellow/", "volume": 8527540 },
+  { "path": "/men/suits/size-46/", "volume": 7309320 },
+  { "path": "/men/dress-shirts/green/", "volume": 6710140 },
+  { "path": "/women/suits/seersucker/", "volume": 6091100 },
+  { "path": "/men/shoes/wingtip/", "volume": 5035400 },
+  { "path": "/women/suits/orange/", "volume": 4872880 },
+  { "path": "/men/suits/size-48/", "volume": 4872880 },
+  { "path": "/men/dress-shirts/french-cuff/", "volume": 4166250 },
+  { "path": "/men/suits/size-34/", "volume": 3654660 },
+  { "path": "/women/suits/blue/", "volume": 2798370 },
+  { "path": "/men/tuxedos/orange/", "volume": 2524260 },
+  { "path": "/men/suits/french-cuff/", "volume": 2436440 },
+  { "path": "/men/pants-trousers/yellow/", "volume": 2236840 },
+  { "path": "/women/accessories/", "volume": 2016280 },
+  { "path": "/men/pants-trousers/orange/", "volume": 1962040 },
+  { "path": "/men/dress-shirts/casual/white/", "volume": 1899590 },
+  { "path": "/men/dress-shirts/pink/", "volume": 1793520 },
+  { "path": "/men/suits/size-50/", "volume": 1756260 },
+  { "path": "/men/dress-shirts/white/french-cuff/", "volume": 1756260 },
+  { "path": "/men/pants-trousers/seersucker/", "volume": 1711980 },
+  { "path": "/women/dress-shirts/french-cuff/", "volume": 1666500 },
+  { "path": "/women/suits/navy/", "volume": 1616940 },
+  { "path": "/men/dress-shirts/red/", "volume": 1393840 },
+  { "path": "/women/suits/green/", "volume": 1319050 },
+  { "path": "/men/pants-trousers/gabardine/", "volume": 1299780 },
+  { "path": "/women/suits/casual/", "volume": 1218220 },
+  { "path": "/men/suits/size-52/", "volume": 1218220 },
+  { "path": "/men/suits/single-breasted/", "volume": 1218220 },
+  { "path": "/men/suits/cashmere/", "volume": 1218220 },
+  { "path": "/men/suits/wingtip/", "volume": 1218220 },
+  { "path": "/men/suits/seersucker/yellow/", "volume": 1218220 },
+  { "path": "/men/ties-bowties/orange/", "volume": 1205970 },
+  { "path": "/men/ties-bowties/yellow/", "volume": 1205970 },
+  { "path": "/women/dress-shirts/blue/", "volume": 1069250 },
+  { "path": "/men/pants-trousers/green/", "volume": 886710 },
+  { "path": "/men/tuxedos/casual/", "volume": 841420 },
+  { "path": "/men/tuxedos/wingtip/", "volume": 841420 },
+  { "path": "/men/tuxedos/yellow/", "volume": 841420 },
+  { "path": "/women/dress-shirts/casual/", "volume": 833250 },
+  { "path": "/men/dress-shirts/wingtip/", "volume": 833250 },
+  { "path": "/men/dress-shirts/cashmere/", "volume": 833250 },
+  { "path": "/men/dress-shirts/spread-collar/", "volume": 833250 },
+  { "path": "/men/suits/pink/", "volume": 812350 },
+  { "path": "/men/ties-bowties/formal/black/black-tie/", "volume": 803130 },
+  { "path": "/women/pants-trousers/corduroy/", "volume": 774920 },
+  { "path": "/men/pants-trousers/blue/", "volume": 769360 },
+  { "path": "/men/suits/size-54/", "volume": 730930 },
+  { "path": "/men/blazers-sportcoats/orange/", "volume": 723510 },
+  { "path": "/men/dress-shirts/navy/", "volume": 711760 },
+  { "path": "/men/ties-bowties/green/", "volume": 693500 },
+  { "path": "/women/suits/grey/gray/", "volume": 627480 },
+  { "path": "/men/shoes/casual/black/", "volume": 621340 },
+  { "path": "/women/blazers-sportcoats/seersucker/", "volume": 619530 },
+  { "path": "/men/pants-trousers/brown/", "volume": 541040 },
+  { "path": "/men/dress-shirts/flannel/white/", "volume": 534370 },
+  { "path": "/men/blazers-sportcoats/grey/gray/", "volume": 517190 },
+  { "path": "/women/ties-bowties/black/black-tie/", "volume": 499760 },
+  { "path": "/men/ties-bowties/wedding/black/", "volume": 496350 },
+  { "path": "/women/suits/tailored/", "volume": 469000 },
+  { "path": "/men/suits/size-56/", "volume": 438560 },
+  { "path": "/men/dress-shirts/luxury/", "volume": 432710 },
+  { "path": "/men/tuxedos/spread-collar/", "volume": 420710 },
+  { "path": "/men/tuxedos/french-cuff/", "volume": 420710 },
+  { "path": "/men/tuxedos/corduroy/", "volume": 420710 },
+  { "path": "/men/tuxedos/flannel/", "volume": 420710 },
+  { "path": "/women/dress-shirts/black/", "volume": 402960 },
+  { "path": "/women/pants-trousers/orange/", "volume": 387460 },
+  { "path": "/women/pants-trousers/seersucker/", "volume": 387460 },
+  { "path": "/men/pants-trousers/cashmere/", "volume": 387460 },
+  { "path": "/men/suits/black/black-tie/", "volume": 379980 },
+  { "path": "/men/dress-shirts/grey/gray/", "volume": 369680 },
+  { "path": "/men/ties-bowties/flannel/", "volume": 368920 },
+  { "path": "/men/shoes/casual/brown/", "volume": 325200 },
+  { "path": "/men/suits/casual/black/", "volume": 319340 },
+  { "path": "/men/ties-bowties/blue/", "volume": 297240 },
+  { "path": "/men/dress-shirts/casual/black/", "volume": 284660 },
+  { "path": "/men/pants-trousers/tan/", "volume": 282400 },
+  { "path": "/men/suits/wedding/blue/", "volume": 269430 },
+  { "path": "/men/suits/double-breasted/", "volume": 268360 },
+  { "path": "/men/vests/yellow/", "volume": 268280 },
+  { "path": "/men/suits/wedding/green/", "volume": 267200 },
+  { "path": "/men/suits/wedding/navy/", "volume": 265110 },
+  { "path": "/men/ties-bowties/casual/black/black-tie/", "volume": 249880 },
+  { "path": "/men/shoes/casual/wingtip/", "volume": 235600 },
+  { "path": "/men/suits/prom/black/", "volume": 233580 },
+  { "path": "/men/suits/wedding/grey/gray/", "volume": 226590 },
+  { "path": "/men/vests/orange/", "volume": 226000 },
+  { "path": "/women/suits/prom/", "volume": 190350 },
+  { "path": "/men/dress-shirts/tailored/", "volume": 189800 },
+  { "path": "/men/ties-bowties/spread-collar/", "volume": 184460 },
+  { "path": "/men/suits/modern-fit/", "volume": 178460 },
+  { "path": "/men/dress-shirts/casual/linen/", "volume": 167990 },
+  { "path": "/men/pants-trousers/corduroy/green/", "volume": 166240 },
+  { "path": "/men/dress-shirts/casual/blue/", "volume": 164500 },
+  { "path": "/men/dress-shirts/flannel/blue/", "volume": 164500 },
+  { "path": "/men/suits/wedding/tan/", "volume": 163770 },
+  { "path": "/men/shoes/casual/white/", "volume": 160890 },
+  { "path": "/men/tuxedos/grey/gray/", "volume": 160090 },
+  { "path": "/men/suits/corduroy/black/", "volume": 159670 },
+  { "path": "/men/suits/seersucker/black/", "volume": 159670 },
+  { "path": "/men/pants-trousers/casual/black/", "volume": 154140 },
+  { "path": "/men/belts/black/", "volume": 151330 },
+  { "path": "/men/suits/wedding/orange/", "volume": 149380 },
+  { "path": "/men/blazers-sportcoats/tan/", "volume": 139100 },
+  { "path": "/men/blazers-sportcoats/double-breasted/", "volume": 136350 },
+  { "path": "/men/dress-shirts/linen/white/", "volume": 134850 },
+  { "path": "/men/suits/three-piece/", "volume": 132060 },
+  { "path": "/men/dress-shirts/brown/", "volume": 131280 },
+  { "path": "/women/tuxedos/wedding/", "volume": 129400 },
+  { "path": "/men/ties-bowties/red/", "volume": 127190 },
+  { "path": "/women/suits/burgundy/", "volume": 125230 },
+  { "path": "/men/blazers-sportcoats/business/", "volume": 121120 },
+  { "path": "/men/shoes/black/wingtip/", "volume": 119980 },
+  { "path": "/men/suits/formal/black/", "volume": 117350 },
+  { "path": "/women/pants-trousers/black/", "volume": 115680 },
+  { "path": "/men/pants-trousers/corduroy/brown/", "volume": 112620 },
+  { "path": "/women/suits/tan/", "volume": 112210 },
+  { "path": "/men/blazers-sportcoats/dinner-jacket/", "volume": 112010 },
+  { "path": "/women/dress-shirts/pink/", "volume": 107730 },
+  { "path": "/men/ties-bowties/pink/", "volume": 105150 },
+  { "path": "/men/ties-bowties/burgundy/", "volume": 104890 },
+  { "path": "/men/dress-shirts/business/white/", "volume": 96020 },
+  { "path": "/men/bow-ties/black/", "volume": 93250 },
+  { "path": "/men/ties-bowties/gold/", "volume": 91260 },
+  { "path": "/men/suits/seersucker/blue/", "volume": 90270 },
+  { "path": "/men/suits/flannel/blue/", "volume": 90270 },
+  { "path": "/men/suits/casual/blue/", "volume": 90270 },
+  { "path": "/men/suits/corduroy/blue/", "volume": 90270 },
+  { "path": "/men/suits/casual/linen/", "volume": 87520 },
+  { "path": "/men/pants-trousers/casual/linen/", "volume": 87240 },
+  { "path": "/men/ties-bowties/navy/", "volume": 85590 },
+  { "path": "/women/blazers-sportcoats/tweed/", "volume": 78400 },
+  { "path": "/women/blazers-sportcoats/navy/", "volume": 77900 },
+  { "path": "/women/suits/pink/", "volume": 77480 },
+  { "path": "/men/pants-trousers/corduroy/black/", "volume": 77100 },
+  { "path": "/men/suits/prom/orange/", "volume": 76140 },
+  { "path": "/women/suits/white/", "volume": 75840 },
+  { "path": "/men/suits/seersucker/white/", "volume": 75840 },
+  { "path": "/men/dress-shirts/linen/orange/", "volume": 74890 },
+  { "path": "/women/blazers-sportcoats/green/", "volume": 74040 },
+  { "path": "/men/blazers-sportcoats/corduroy/green/", "volume": 73980 },
+  { "path": "/men/tuxedos/wedding/black/", "volume": 73200 },
+  { "path": "/men/dress-shirts/casual/slim-fit/", "volume": 72770 },
+  { "path": "/men/suits/wedding/brown/", "volume": 71730 },
+  { "path": "/men/suits/wedding/white/", "volume": 71600 },
+  { "path": "/men/pants-trousers/corduroy/white/", "volume": 70200 },
+  { "path": "/men/suits/seersucker/grey/gray/", "volume": 69720 },
+  { "path": "/men/suits/flannel/grey/gray/", "volume": 69720 },
+  { "path": "/men/blazers-sportcoats/casual/black/", "volume": 68840 },
+  { "path": "/men/ties-bowties/purple/", "volume": 68520 },
+  { "path": "/women/dress-shirts/formal/", "volume": 67680 },
+  { "path": "/men/vests/grey/gray/", "volume": 66690 },
+  { "path": "/men/vests/blue/", "volume": 64250 },
+  { "path": "/men/suits/seersucker/navy/", "volume": 62190 },
+  { "path": "/men/blazers-sportcoats/cashmere/black/", "volume": 61770 },
+  { "path": "/men/pants-trousers/corduroy/grey/gray/", "volume": 58470 },
+  { "path": "/men/pants-trousers/casual/grey/gray/", "volume": 58470 },
+  { "path": "/men/blazers-sportcoats/burgundy/", "volume": 58210 },
+  { "path": "/men/suits/seersucker/green/", "volume": 57350 },
+  { "path": "/men/suits/corduroy/green/", "volume": 57350 },
+  { "path": "/men/dress-shirts/gold/", "volume": 53850 },
+  { "path": "/men/blazers-sportcoats/corduroy/brown/", "volume": 53750 },
+  { "path": "/men/vests/red/", "volume": 52840 },
+  { "path": "/men/pants-trousers/tailored/", "volume": 52240 },
+  { "path": "/women/suits/purple/", "volume": 51990 },
+  { "path": "/women/dress-shirts/satin/", "volume": 51930 },
+  { "path": "/men/dress-shirts/casual/cotton/", "volume": 51720 },
+  { "path": "/men/pants-trousers/flannel/grey/gray/", "volume": 50920 },
+  { "path": "/women/dress-shirts/tailored/", "volume": 50480 },
+  { "path": "/men/dress-shirts/flannel/black/", "volume": 50370 },
+  { "path": "/men/pants-trousers/corduroy/blue/", "volume": 47940 },
+  { "path": "/men/vests/cashmere/", "volume": 45930 },
+  { "path": "/women/pants-trousers/wool/", "volume": 45630 },
+  { "path": "/women/suits/linen/", "volume": 45440 },
+  { "path": "/men/tuxedos/tuxedo-jacket/", "volume": 44950 },
+  { "path": "/men/suits/prom/blue/", "volume": 44850 },
+  { "path": "/men/dress-shirts/casual/green/", "volume": 44670 },
+  { "path": "/men/dress-shirts/corduroy/green/", "volume": 44670 },
+  { "path": "/men/dress-shirts/flannel/green/", "volume": 44670 },
+  { "path": "/men/shoes/blue/", "volume": 44530 },
+  { "path": "/men/vests/green/", "volume": 43550 },
+  { "path": "/men/pants-trousers/burgundy/", "volume": 42760 },
+  { "path": "/men/shoes/brown/wingtip/", "volume": 42420 },
+  { "path": "/men/pants-trousers/beige/", "volume": 42350 },
+  { "path": "/men/shoes/navy/", "volume": 40040 },
+  { "path": "/men/suits/luxury/", "volume": 38400 },
+  { "path": "/men/suits/flannel/white/", "volume": 37920 },
+  { "path": "/men/tuxedos/double-breasted/", "volume": 36750 },
+  { "path": "/men/pants-trousers/casual/blue/", "volume": 36520 },
+  { "path": "/men/tuxedos/wedding/white/", "volume": 34580 },
+  { "path": "/women/tuxedos/white/", "volume": 34440 },
+  { "path": "/men/blazers-sportcoats/corduroy/black/", "volume": 34420 },
+  { "path": "/men/dress-shirts/cotton/white/", "volume": 33800 },
+  { "path": "/women/dress-shirts/navy/", "volume": 33750 },
+  { "path": "/men/suspenders/black/", "volume": 33150 },
+  { "path": "/men/tuxedos/black/black-tie/", "volume": 33110 },
+  { "path": "/men/dress-shirts/white/slim-fit/", "volume": 32560 },
+  { "path": "/women/suits/beige/", "volume": 32000 },
+  { "path": "/men/dress-shirts/flannel/red/", "volume": 30800 },
+  { "path": "/boys/dress-shirts/white/", "volume": 28300 },
+  { "path": "/men/dress-shirts/linen/blue/", "volume": 28040 },
+  { "path": "/women/shoes/business/", "volume": 27870 },
+  { "path": "/boys/suits/black/", "volume": 27830 },
+  { "path": "/women/blazers-sportcoats/corduroy/black/", "volume": 27350 },
+  { "path": "/women/blazers-sportcoats/black/", "volume": 27350 },
+  { "path": "/men/suits/gold/", "volume": 27180 },
+  { "path": "/men/vests/navy/", "volume": 27160 },
+  { "path": "/men/hats/black/", "volume": 26970 },
+  { "path": "/men/cufflinks/black/", "volume": 26970 },
+  { "path": "/men/suits/prom/grey/gray/", "volume": 26260 },
+  { "path": "/men/pants-trousers/corduroy/slim-fit/", "volume": 26060 },
+  { "path": "/men/blazers-sportcoats/pink/", "volume": 25560 },
+  { "path": "/men/vests/white/", "volume": 25550 },
+  { "path": "/men/suits/affordable/", "volume": 25400 },
+  { "path": "/boys/suits/seersucker/", "volume": 25210 },
+  { "path": "/men/blazers-sportcoats/casual/linen/", "volume": 25000 },
+  { "path": "/women/suits/double-breasted/", "volume": 24660 },
+  { "path": "/men/blazers-sportcoats/casual/tweed/", "volume": 24620 },
+  { "path": "/women/dress-shirts/slim-fit/", "volume": 24300 },
+  { "path": "/men/ties-bowties/brown/", "volume": 24250 },
+  { "path": "/men/ties-bowties/grey/gray/", "volume": 24220 },
+  { "path": "/men/dress-shirts/formal/white/", "volume": 24040 },
+  { "path": "/women/dress-shirts/business/white/", "volume": 23880 },
+  { "path": "/men/dress-shirts/casual/purple/", "volume": 23650 },
+  { "path": "/men/pants-trousers/corduroy/navy/", "volume": 22860 },
+  { "path": "/men/suits/linen/orange/", "volume": 22720 },
+  { "path": "/men/suits/linen/yellow/", "volume": 22720 },
+  { "path": "/men/belts/casual/", "volume": 22060 },
+  { "path": "/men/suits/linen/green/", "volume": 21390 },
+  { "path": "/men/blazers-sportcoats/beige/", "volume": 20100 },
+  { "path": "/men/suits/corduroy/brown/", "volume": 19580 },
+  { "path": "/men/suits/seersucker/brown/", "volume": 19580 },
+  { "path": "/women/pants-trousers/navy/", "volume": 19480 },
+  { "path": "/boys/dress-shirts/flannel/", "volume": 19420 },
+  { "path": "/men/suits/linen/blue/", "volume": 19200 },
+  { "path": "/men/dress-shirts/polyester/", "volume": 18510 },
+  { "path": "/men/dress-shirts/tan/", "volume": 18420 },
+  { "path": "/men/pants-trousers/flannel/blue/", "volume": 18260 },
+  { "path": "/men/vests/casual/black/", "volume": 18140 },
+  { "path": "/boys/suits/white/", "volume": 18000 },
+  { "path": "/men/pocket-squares/black/", "volume": 17980 },
+  { "path": "/men/blazers-sportcoats/white/dinner-jacket/", "volume": 17730 },
+  { "path": "/men/dress-shirts/black/black-tie/", "volume": 17590 },
+  { "path": "/men/suits/seersucker/purple/", "volume": 17330 },
+  { "path": "/men/vests/double-breasted/", "volume": 16460 },
+  { "path": "/men/pants-trousers/casual/white/", "volume": 16440 },
+  { "path": "/men/blazers-sportcoats/purple/", "volume": 16440 },
+  { "path": "/men/vests/business/", "volume": 16020 },
+  { "path": "/men/blazers-sportcoats/casual/navy/", "volume": 15580 },
+  { "path": "/men/blazers-sportcoats/corduroy/navy/", "volume": 15580 },
+  { "path": "/men/blazers-sportcoats/seersucker/navy/", "volume": 15580 },
+  { "path": "/men/dress-shirts/casual/red/", "volume": 15400 },
+  { "path": "/men/suits/prom/white/", "volume": 15100 },
+  { "path": "/men/bow-ties/silk/", "volume": 14820 },
+  { "path": "/men/vests/purple/", "volume": 14760 },
+  { "path": "/men/shoes/burgundy/", "volume": 14760 },
+  { "path": "/women/ties-bowties/white/", "volume": 14590 },
+  { "path": "/men/suits/seersucker/big-and-tall/", "volume": 14340 },
+  { "path": "/men/dress-shirts/linen/yellow/", "volume": 14170 },
+  { "path": "/women/blazers-sportcoats/blue/", "volume": 14020 },
+  { "path": "/men/blazers-sportcoats/casual/blue/", "volume": 14020 },
+  { "path": "/men/blazers-sportcoats/corduroy/blue/", "volume": 14020 },
+  { "path": "/men/tuxedos/wedding/grey/gray/", "volume": 13640 },
+  { "path": "/women/tuxedos/prom/", "volume": 13600 },
+  { "path": "/men/suits/grey/three-piece/gray/", "volume": 13580 },
+  { "path": "/men/suits/cotton/", "volume": 13420 },
+  { "path": "/women/dress-shirts/cotton/white/", "volume": 13350 },
+  { "path": "/men/tuxedos/tan/", "volume": 13160 },
+  { "path": "/men/pants-trousers/purple/", "volume": 12960 },
+  { "path": "/men/shoes/business/black/", "volume": 12930 },
+  { "path": "/men/pants-trousers/red/", "volume": 12910 },
+  { "path": "/men/tuxedos/brown/", "volume": 12740 },
+  { "path": "/men/vests/formal/", "volume": 12650 },
+  { "path": "/men/tuxedos/white/tuxedo-jacket/", "volume": 12650 },
+  { "path": "/men/suits/prom/green/", "volume": 12630 },
+  { "path": "/men/vests/wedding/", "volume": 12340 },
+  { "path": "/men/belts/tan/", "volume": 12300 },
+  { "path": "/men/suits/prom/red/", "volume": 12080 },
+  { "path": "/men/dress-shirts/flannel/pink/", "volume": 11970 },
+  { "path": "/women/blazers-sportcoats/burgundy/", "volume": 11950 },
+  { "path": "/men/tuxedos/slim-fit/", "volume": 11920 },
+  { "path": "/men/blazers-sportcoats/slim-fit/", "volume": 11580 },
+  { "path": "/women/dress-shirts/luxury/", "volume": 11500 },
+  { "path": "/men/dress-shirts/corduroy/navy/", "volume": 11250 },
+  { "path": "/men/hats/red/", "volume": 11000 },
+  { "path": "/men/belts/luxury/", "volume": 10890 },
+  { "path": "/men/blazers-sportcoats/luxury/", "volume": 10740 },
+  { "path": "/women/tuxedos/tuxedo-jacket/", "volume": 10600 },
+  { "path": "/women/blazers-sportcoats/grey/gray/", "volume": 10600 },
+  { "path": "/men/blazers-sportcoats/corduroy/grey/gray/", "volume": 10600 },
+  { "path": "/men/suits/wedding/beige/", "volume": 10560 },
+  { "path": "/men/ties-bowties/luxury/", "volume": 10540 },
+  { "path": "/men/belts/brown/", "volume": 10520 },
+  { "path": "/men/vests/wool/", "volume": 10420 },
+  { "path": "/women/suits/wool/", "volume": 10240 },
+  { "path": "/women/suits/black/black-tie/", "volume": 9870 },
+  { "path": "/men/pants-trousers/black/slim-fit/", "volume": 9800 },
+  { "path": "/men/suits/wedding/burgundy/", "volume": 9730 },
+  { "path": "/men/blazers-sportcoats/linen/blue/", "volume": 9550 },
+  { "path": "/men/pants-trousers/corduroy/tan/", "volume": 9460 },
+  { "path": "/women/blazers-sportcoats/double-breasted/", "volume": 9390 },
+  { "path": "/men/dress-shirts/linen/green/", "volume": 9390 },
+  { "path": "/boys/suits/navy/", "volume": 9380 },
+  { "path": "/men/suits/navy/three-piece/", "volume": 9360 },
+  { "path": "/men/vests/pink/", "volume": 9200 },
+  { "path": "/boys/suits/blue/", "volume": 9120 },
+  { "path": "/men/ties-bowties/silk/yellow/", "volume": 9040 },
+  { "path": "/men/suits/grey/double-breasted/gray/", "volume": 9040 },
+  { "path": "/men/tuxedos/wedding/blue/", "volume": 9030 },
+  { "path": "/men/pants-trousers/skinny-fit/", "volume": 8960 },
+  { "path": "/men/dress-shirts/black/slim-fit/", "volume": 8900 },
+  { "path": "/men/tuxedos/black/tuxedo-jacket/", "volume": 8880 },
+  { "path": "/boys/suits/formal/", "volume": 8800 },
+  { "path": "/men/suits/seersucker/double-breasted/", "volume": 8220 },
+  { "path": "/men/suits/corduroy/double-breasted/", "volume": 8220 },
+  { "path": "/men/pocket-squares/white/", "volume": 8140 },
+  { "path": "/men/dress-shirts/casual/big-and-tall/", "volume": 8130 },
+  { "path": "/men/dress-shirts/flannel/big-and-tall/", "volume": 8130 },
+  { "path": "/men/suits/skinny-fit/", "volume": 8100 },
+  { "path": "/men/dress-shirts/classic-fit/", "volume": 7980 },
+  { "path": "/men/belts/blue/", "volume": 7950 },
+  { "path": "/men/vests/luxury/", "volume": 7780 },
+  { "path": "/men/shoes/green/", "volume": 7720 },
+  { "path": "/women/suits/luxury/", "volume": 7260 },
+  { "path": "/men/blazers-sportcoats/casual/wool/", "volume": 7170 },
+  { "path": "/men/tuxedos/prom/black/", "volume": 6930 },
+  { "path": "/men/dress-shirts/casual/luxury/", "volume": 6880 },
+  { "path": "/men/suits/navy/double-breasted/", "volume": 6720 },
+  { "path": "/men/suits/velvet/green/", "volume": 6720 },
+  { "path": "/men/shoes/casual/tan/", "volume": 6720 },
+  { "path": "/men/pocket-squares/pink/", "volume": 6720 },
+  { "path": "/men/dress-shirts/flannel/grey/gray/", "volume": 6580 },
+  { "path": "/men/suits/church/", "volume": 6570 },
+  { "path": "/men/pants-trousers/corduroy/burgundy/", "volume": 6520 },
+  { "path": "/women/blazers-sportcoats/beige/", "volume": 6500 },
+  { "path": "/men/vests/brown/", "volume": 6060 },
+  { "path": "/men/tuxedos/wedding/green/", "volume": 6000 },
+  { "path": "/men/suits/party/", "volume": 5860 },
+  { "path": "/men/dress-shirts/flannel/luxury/", "volume": 5750 },
+  { "path": "/men/dress-shirts/yellow/luxury/", "volume": 5750 },
+  { "path": "/men/shoes/casual/navy/", "volume": 5720 },
+  { "path": "/boys/suits/prom/", "volume": 5700 },
+  { "path": "/men/pocket-squares/red/", "volume": 5640 },
+  { "path": "/men/pants-trousers/linen/white/", "volume": 5630 },
+  { "path": "/men/pants-trousers/casual/slim-fit/", "volume": 5600 },
+  { "path": "/men/suits/white/double-breasted/", "volume": 5590 },
+  { "path": "/men/pants-trousers/linen/blue/", "volume": 5590 },
+  { "path": "/boys/suits/grey/gray/", "volume": 5580 },
+  { "path": "/men/suits/tweed/three-piece/", "volume": 5430 },
+  { "path": "/men/suits/funeral/black/", "volume": 5350 },
+  { "path": "/men/vests/cotton/", "volume": 5300 },
+  { "path": "/men/tuxedos/wedding/navy/", "volume": 5250 },
+  { "path": "/women/blazers-sportcoats/formal/", "volume": 5220 },
+  { "path": "/men/suits/prom/navy/", "volume": 5100 },
+  { "path": "/men/belts/red/", "volume": 5080 },
+  { "path": "/men/pants-trousers/casual/wool/", "volume": 5070 },
+  { "path": "/men/shoes/formal/black/", "volume": 5000 },
+  { "path": "/men/suits/prom/pink/", "volume": 4800 },
+  { "path": "/women/suits/three-piece/", "volume": 4760 },
+  { "path": "/women/pants-trousers/tailored/", "volume": 4720 },
+  { "path": "/men/suits/velvet/blue/", "volume": 4720 },
+  { "path": "/men/cufflinks/grey/gray/", "volume": 4710 },
+  { "path": "/men/suits/velvet/red/", "volume": 4650 },
+  { "path": "/men/vests/burgundy/", "volume": 4640 },
+  { "path": "/men/tuxedos/formal/", "volume": 4500 },
+  { "path": "/men/suits/blue/double-breasted/", "volume": 4500 },
+  { "path": "/boys/vests/", "volume": 4480 },
+  { "path": "/men/suits/linen/black/", "volume": 4440 },
+  { "path": "/men/pants-trousers/linen/black/", "volume": 4400 },
+  { "path": "/men/suits/green/double-breasted/", "volume": 4250 },
+  { "path": "/men/suits/wedding/three-piece/", "volume": 4190 },
+  { "path": "/men/pocket-squares/blue/", "volume": 4170 },
+  { "path": "/men/pants-trousers/formal/black/", "volume": 4170 },
+  { "path": "/men/suits/prom/purple/", "volume": 4160 },
+  { "path": "/men/suits/tweed/green/", "volume": 4120 },
+  { "path": "/men/vests/linen/", "volume": 4100 },
+  { "path": "/men/dress-shirts/wedding/white/", "volume": 4100 },
+  { "path": "/men/suspenders/luxury/", "volume": 4040 },
+  { "path": "/men/pocket-squares/luxury/", "volume": 4040 },
+  { "path": "/men/suits/brown/double-breasted/", "volume": 4000 },
+  { "path": "/men/bow-ties/pink/", "volume": 3920 },
+  { "path": "/men/suits/interview/", "volume": 3870 },
+  { "path": "/women/tuxedos/pink/", "volume": 3860 },
+  { "path": "/men/dress-shirts/linen/pink/", "volume": 3840 },
+  { "path": "/men/suits/grey/slim-fit/gray/", "volume": 3780 },
+  { "path": "/men/belts/white/", "volume": 3740 },
+  { "path": "/men/suits/tweed/brown/", "volume": 3720 },
+  { "path": "/men/shoes/casual/blue/", "volume": 3630 },
+  { "path": "/men/blazers-sportcoats/tweed/grey/gray/", "volume": 3550 },
+  { "path": "/men/blazers-sportcoats/big-and-tall/", "volume": 3550 },
+  { "path": "/men/blazers-sportcoats/casual/dinner-jacket/", "volume": 3550 },
+  { "path": "/men/belts/cotton/", "volume": 3400 },
+  { "path": "/men/blazers-sportcoats/navy/double-breasted/", "volume": 3380 },
+  { "path": "/men/ties-bowties/business/", "volume": 3360 },
+  { "path": "/men/tuxedos/luxury/", "volume": 3350 },
+  { "path": "/men/suits/blue/three-piece/", "volume": 3330 },
+  { "path": "/men/dress-shirts/formal/black/", "volume": 3310 },
+  { "path": "/men/blazers-sportcoats/tweed/brown/", "volume": 3300 },
+  { "path": "/women/pants-trousers/burgundy/", "volume": 3260 },
+  { "path": "/women/vests/black/", "volume": 3260 },
+  { "path": "/women/pants-trousers/formal/", "volume": 3250 },
+  { "path": "/men/suits/formal/interview/", "volume": 3180 },
+  { "path": "/men/pants-trousers/linen/grey/gray/", "volume": 3160 },
+  { "path": "/men/suits/velvet/black/", "volume": 3140 },
+  { "path": "/men/belts/navy/", "volume": 3140 },
+  { "path": "/men/ties-bowties/white/black-tie/", "volume": 3100 },
+  { "path": "/women/suits/wedding/linen/", "volume": 3070 },
+  { "path": "/men/suspenders/grey/gray/", "volume": 3040 },
+  { "path": "/men/suits/linen/grey/gray/", "volume": 3010 },
+  { "path": "/men/suits/green/three-piece/", "volume": 3000 },
+  { "path": "/men/dress-shirts/linen/black/", "volume": 2980 },
+  { "path": "/men/blazers-sportcoats/velvet/red/", "volume": 2920 },
+  { "path": "/men/suits/zoot/", "volume": 2880 },
+  { "path": "/men/suspenders/silk/", "volume": 2820 },
+  { "path": "/men/cufflinks/silk/", "volume": 2820 },
+  { "path": "/men/blazers-sportcoats/tailored/", "volume": 2810 },
+  { "path": "/men/suits/tweed/grey/gray/", "volume": 2800 },
+  { "path": "/women/dress-shirts/silk/", "volume": 2780 },
+  { "path": "/men/cufflinks/blue/", "volume": 2780 },
+  { "path": "/men/dress-shirts/affordable/", "volume": 2770 },
+  { "path": "/boys/suits/tan/", "volume": 2750 },
+  { "path": "/men/belts/formal/", "volume": 2720 },
+  { "path": "/men/suits/linen/brown/", "volume": 2710 },
+  { "path": "/men/blazers-sportcoats/velvet/burgundy/", "volume": 2670 },
+  { "path": "/men/blazers-sportcoats/corduroy/white/", "volume": 2650 },
+  { "path": "/men/suits/wedding/double-breasted/", "volume": 2640 },
+  { "path": "/boys/accessories/", "volume": 2560 },
+  { "path": "/men/blazers-sportcoats/polyester/", "volume": 2560 },
+  { "path": "/men/shoes/tan/wingtip/", "volume": 2540 },
+  { "path": "/men/suspenders/white/", "volume": 2500 },
+  { "path": "/men/pants-trousers/business/corduroy/", "volume": 2460 },
+  { "path": "/men/blazers-sportcoats/casual/slim-fit/", "volume": 2460 },
+  { "path": "/women/suits/graduation/", "volume": 2400 },
+  { "path": "/men/blazers-sportcoats/corduroy/red/", "volume": 2400 },
+  { "path": "/men/vests/tan/", "volume": 2340 },
+  { "path": "/men/tuxedos/peak-lapel/", "volume": 2340 },
+  { "path": "/men/vests/gold/", "volume": 2320 },
+  { "path": "/men/tuxedos/notch-lapel/", "volume": 2220 },
+  { "path": "/men/dress-shirts/interview/", "volume": 2200 },
+  { "path": "/men/belts/burgundy/", "volume": 2200 },
+  { "path": "/men/shoes/red/", "volume": 2190 },
+  { "path": "/men/blazers-sportcoats/party/", "volume": 2130 },
+  { "path": "/men/dress-shirts/black/luxury/", "volume": 2120 },
+  { "path": "/men/pants-trousers/corduroy/red/", "volume": 2020 },
+  { "path": "/men/suits/polyester/", "volume": 2000 },
+  { "path": "/men/dress-shirts/linen/brown/", "volume": 2000 },
+  { "path": "/men/dress-shirts/white/luxury/", "volume": 2000 },
+  { "path": "/boys/ties-bowties/", "volume": 2000 },
+  { "path": "/men/pants-trousers/linen/slim-fit/", "volume": 1980 },
+  { "path": "/women/vests/green/", "volume": 1970 },
+  { "path": "/men/suits/wedding/red/", "volume": 1960 },
+  { "path": "/men/pocket-squares/green/", "volume": 1950 },
+  { "path": "/men/pants-trousers/corduroy/beige/", "volume": 1910 },
+  { "path": "/men/cufflinks/white/", "volume": 1880 },
+  { "path": "/men/shoes/wedding/brown/", "volume": 1870 },
+  { "path": "/men/blazers-sportcoats/velvet/dinner-jacket/", "volume": 1840 },
+  { "path": "/men/suits/wedding/pink/", "volume": 1810 },
+  { "path": "/men/tuxedos/beige/", "volume": 1800 },
+  { "path": "/men/tuxedos/dinner-jacket/", "volume": 1740 },
+  { "path": "/boys/blazers-sportcoats/seersucker/", "volume": 1740 },
+  { "path": "/men/suits/linen/tan/", "volume": 1720 },
+  { "path": "/men/dress-shirts/modern-fit/", "volume": 1710 },
+  { "path": "/men/dress-shirts/satin/black/", "volume": 1710 },
+  { "path": "/women/suits/cotton/", "volume": 1700 },
+  { "path": "/men/pants-trousers/luxury/", "volume": 1700 },
+  { "path": "/men/tuxedos/velvet/blue/", "volume": 1640 },
+  { "path": "/men/dress-shirts/linen/navy/", "volume": 1640 },
+  { "path": "/men/shoes/formal/brown/", "volume": 1620 },
+  { "path": "/men/tuxedos/three-piece/", "volume": 1600 },
+  { "path": "/men/blazers-sportcoats/black/double-breasted/", "volume": 1600 },
+  { "path": "/men/blazers-sportcoats/tweed/black/", "volume": 1600 },
+  { "path": "/men/tuxedos/satin/", "volume": 1520 },
+  { "path": "/men/suits/two-piece/", "volume": 1500 },
+  { "path": "/men/pocket-squares/burgundy/", "volume": 1500 },
+  { "path": "/men/tuxedos/shawl-lapel/", "volume": 1480 },
+  { "path": "/boys/suits/three-piece/", "volume": 1470 },
+  { "path": "/men/dress-shirts/skinny-fit/", "volume": 1460 },
+  { "path": "/men/suits/velvet/burgundy/", "volume": 1440 },
+  { "path": "/women/tuxedos/black/tuxedo-jacket/", "volume": 1420 },
+  { "path": "/men/pocket-squares/purple/", "volume": 1410 },
+  { "path": "/women/vests/burgundy/", "volume": 1400 },
+  { "path": "/men/ties-bowties/big-and-tall/", "volume": 1400 },
+  { "path": "/men/suits/linen/navy/", "volume": 1400 },
+  { "path": "/men/pants-trousers/pink/", "volume": 1400 },
+  { "path": "/men/dress-shirts/silk/yellow/", "volume": 1390 },
+  { "path": "/men/ties-bowties/interview/", "volume": 1350 },
+  { "path": "/men/shoes/big-and-tall/", "volume": 1340 },
+  { "path": "/men/pants-trousers/linen/green/", "volume": 1340 },
+  { "path": "/men/suits/satin/", "volume": 1330 },
+  { "path": "/men/suits/navy/slim-fit/", "volume": 1320 },
+  { "path": "/men/suits/brown/three-piece/", "volume": 1320 },
+  { "path": "/men/blazers-sportcoats/linen/black/", "volume": 1310 },
+  { "path": "/men/tuxedos/linen/", "volume": 1300 },
+  { "path": "/men/ties-bowties/wedding/white/", "volume": 1300 },
+  { "path": "/boys/blazers-sportcoats/navy/", "volume": 1300 },
+  { "path": "/men/blazers-sportcoats/linen/green/", "volume": 1300 },
+  { "path": "/men/pants-trousers/navy/slim-fit/", "volume": 1260 },
+  { "path": "/men/dress-shirts/linen/slim-fit/", "volume": 1240 },
+  { "path": "/men/vests/big-and-tall/", "volume": 1200 },
+  { "path": "/men/tuxedos/velvet/tuxedo-jacket/", "volume": 1200 },
+  { "path": "/men/tuxedos/wedding/tan/", "volume": 1200 },
+  { "path": "/men/suspenders/brown/", "volume": 1200 },
+  { "path": "/men/shoes/casual/burgundy/", "volume": 1200 },
+  { "path": "/men/pocket-squares/brown/", "volume": 1200 },
+  { "path": "/women/suits/velvet/blue/", "volume": 1160 },
+  { "path": "/men/tuxedos/wedding/brown/", "volume": 1140 },
+  { "path": "/men/pocket-squares/wedding/", "volume": 1140 },
+  { "path": "/men/blazers-sportcoats/tweed/green/", "volume": 1100 },
+  { "path": "/men/pants-trousers/church/", "volume": 1090 },
+  { "path": "/men/blazers-sportcoats/linen/beige/", "volume": 1080 },
+  { "path": "/women/suits/funeral/black/", "volume": 1070 },
+  { "path": "/men/pants-trousers/wedding/linen/", "volume": 1070 },
+  { "path": "/men/ties-bowties/silk/luxury/", "volume": 1060 },
+  { "path": "/women/dress-shirts/white/tailored/", "volume": 1050 },
+  { "path": "/men/ties-bowties/silk/blue/", "volume": 1020 },
+  { "path": "/men/suits/wool/grey/gray/", "volume": 1020 },
+  { "path": "/women/suits/business/black/", "volume": 1000 },
+  { "path": "/men/suits/linen/double-breasted/", "volume": 1000 },
+  { "path": "/men/dress-shirts/cotton/black/", "volume": 1000 },
+  { "path": "/men/blazers-sportcoats/formal/black/", "volume": 960 },
+  { "path": "/men/shoes/luxury/", "volume": 940 },
+  { "path": "/men/pants-trousers/wool/grey/gray/", "volume": 940 },
+  { "path": "/men/blazers-sportcoats/corduroy/purple/", "volume": 940 },
+  { "path": "/men/blazers-sportcoats/flannel/purple/", "volume": 940 },
+  { "path": "/men/pants-trousers/classic-fit/", "volume": 930 },
+  { "path": "/men/pants-trousers/business/black/", "volume": 920 },
+  { "path": "/men/suspenders/navy/", "volume": 900 },
+  { "path": "/men/dress-shirts/party/", "volume": 900 },
+  { "path": "/men/dress-shirts/tweed/", "volume": 900 },
+  { "path": "/men/cufflinks/navy/", "volume": 900 },
+  { "path": "/boys/dress-shirts/black/", "volume": 900 },
+  { "path": "/women/blazers-sportcoats/linen/blue/", "volume": 870 },
+  { "path": "/women/blazers-sportcoats/linen/navy/", "volume": 860 },
+  { "path": "/women/blazers-sportcoats/pink/", "volume": 840 },
+  { "path": "/men/suits/burgundy/double-breasted/", "volume": 840 },
+  { "path": "/men/pants-trousers/linen/tailored/", "volume": 840 },
+  { "path": "/men/blazers-sportcoats/velvet/blue/", "volume": 820 },
+  { "path": "/men/pants-trousers/business/grey/gray/", "volume": 810 },
+  { "path": "/men/blazers-sportcoats/formal/navy/", "volume": 800 },
+  { "path": "/boys/suits/graduation/", "volume": 780 },
+  { "path": "/men/blazers-sportcoats/wool/grey/gray/", "volume": 780 },
+  { "path": "/men/blazers-sportcoats/linen/navy/", "volume": 770 },
+  { "path": "/women/suits/two-piece/", "volume": 750 },
+  { "path": "/men/suits/velvet/purple/", "volume": 740 },
+  { "path": "/men/pants-trousers/black/tailored/", "volume": 740 },
+  { "path": "/men/blazers-sportcoats/black/dinner-jacket/", "volume": 720 },
+  { "path": "/men/tuxedos/tailored/", "volume": 700 },
+  { "path": "/men/suits/tan/double-breasted/", "volume": 700 },
+  { "path": "/men/pants-trousers/cotton/tan/", "volume": 700 },
+  { "path": "/men/pants-trousers/wool/brown/", "volume": 700 },
+  { "path": "/men/dress-shirts/prom/", "volume": 700 },
+  { "path": "/boys/suits/slim-fit/", "volume": 700 },
+  { "path": "/men/suits/burgundy/slim-fit/", "volume": 690 },
+  { "path": "/men/tuxedos/green/tuxedo-jacket/", "volume": 680 },
+  { "path": "/men/suits/black/double-breasted/", "volume": 670 },
+  { "path": "/men/shoes/casual/big-and-tall/", "volume": 670 },
+  { "path": "/men/pants-trousers/modern-fit/", "volume": 660 },
+  { "path": "/men/blazers-sportcoats/velvet/purple/", "volume": 660 },
+  { "path": "/men/vests/slim-fit/", "volume": 650 },
+  { "path": "/men/dress-shirts/silk/white/", "volume": 650 },
+  { "path": "/men/blazers-sportcoats/prom/", "volume": 650 },
+  { "path": "/men/tuxedos/blue/tuxedo-jacket/", "volume": 640 },
+  { "path": { "0": "/", "1": "m", "2": "e", "3": "n", "4": "/", "5": "s", "6": "h", "7": "o", "8": "e", "9": "s", "10": "/", "11": "b", "12": "e", "13": "i", "14": "g", "15": "e", "16": "/" }, "volume": 640 },
+  { "path": "/men/suspenders/formal/", "volume": 620 },
+  { "path": "/men/cufflinks/formal/", "volume": 620 },
+  { "path": "/men/tuxedos/black/double-breasted/", "volume": 600 },
+  { "path": "/men/suits/linen/big-and-tall/", "volume": 600 },
+  { "path": "/men/dress-shirts/formal/slim-fit/", "volume": 600 },
+  { "path": "/men/dress-shirts/linen/purple/", "volume": 600 },
+  { "path": "/men/dress-shirts/graduation/", "volume": 600 },
+  { "path": "/men/shoes/wedding/black/", "volume": 590 },
+  { "path": "/men/tuxedos/velvet/red/", "volume": 580 },
+  { "path": "/men/ties-bowties/silk/green/", "volume": 580 },
+  { "path": "/men/shoes/graduation/", "volume": 580 },
+  { "path": "/men/pants-trousers/tweed/brown/", "volume": 580 },
+  { "path": "/men/shoes/velvet/black/", "volume": 570 },
+  { "path": "/men/hats/wedding/", "volume": 570 },
+  { "path": "/men/vests/beige/", "volume": 560 },
+  { "path": "/men/vests/prom/", "volume": 540 },
+  { "path": "/men/suits/formal/big-and-tall/", "volume": 540 },
+  { "path": "/men/pants-trousers/formal/slim-fit/", "volume": 540 },
+  { "path": "/men/dress-shirts/black/big-and-tall/", "volume": 540 },
+  { "path": "/men/dress-shirts/satin/red/", "volume": 540 },
+  { "path": "/men/blazers-sportcoats/linen/pink/", "volume": 540 },
+  { "path": "/men/blazers-sportcoats/velvet/orange/", "volume": 540 },
+  { "path": "/men/shoes/business/white/", "volume": 530 },
+  { "path": "/men/shoes/prom/luxury/", "volume": 520 },
+  { "path": "/men/dress-shirts/linen/big-and-tall/", "volume": 520 },
+  { "path": "/women/dress-shirts/white/luxury/", "volume": 500 },
+  { "path": "/men/vests/tailored/", "volume": 500 },
+  { "path": "/men/tuxedos/silk/", "volume": 500 },
+  { "path": "/men/suits/black/tailored/", "volume": 500 },
+  { "path": "/men/suits/business/black/", "volume": 500 },
+  { "path": "/men/pants-trousers/linen/big-and-tall/", "volume": 500 },
+  { "path": "/men/ties-bowties/silk/navy/", "volume": 480 },
+  { "path": "/men/dress-shirts/formal/blue/", "volume": 480 },
+  { "path": "/men/blazers-sportcoats/blue/double-breasted/", "volume": 480 },
+  { "path": "/men/dress-shirts/formal/luxury/", "volume": 470 },
+  { "path": "/women/dress-shirts/cotton/black/", "volume": 460 },
+  { "path": "/men/shoes/formal/tan/", "volume": 460 },
+  { "path": "/men/pants-trousers/wool/white/", "volume": 460 },
+  { "path": "/men/hats/brown/", "volume": 460 },
+  { "path": "/men/ties-bowties/velvet/", "volume": 450 },
+  { "path": "/boys/pants-trousers/seersucker/", "volume": 450 },
+  { "path": "/men/blazers-sportcoats/linen/white/", "volume": 450 },
+  { "path": "/men/tuxedos/white/dinner-jacket/", "volume": 440 },
+  { "path": "/men/suits/red/three-piece/", "volume": 440 },
+  { "path": "/men/suits/velvet/navy/", "volume": 440 },
+  { "path": "/men/suits/linen/beige/", "volume": 440 },
+  { "path": "/men/suits/prom/beige/", "volume": 440 },
+  { "path": "/men/pants-trousers/linen/navy/", "volume": 440 },
+  { "path": "/men/dress-shirts/burgundy/luxury/", "volume": 440 },
+  { "path": "/men/pants-trousers/white/slim-fit/", "volume": 430 },
+  { "path": "/men/blazers-sportcoats/navy/dinner-jacket/", "volume": 420 },
+  { "path": "/men/blazers-sportcoats/velvet/navy/", "volume": 410 },
+  { "path": "/men/vests/casual/big-and-tall/", "volume": 400 },
+  { "path": "/men/suits/wedding/tailored/", "volume": 400 },
+  { "path": "/men/suits/linen/three-piece/", "volume": 400 },
+  { "path": "/men/pants-trousers/linen/beige/", "volume": 400 },
+  { "path": "/men/belts/gold/", "volume": 400 },
+  { "path": "/men/blazers-sportcoats/navy/slim-fit/", "volume": 390 },
+  { "path": "/men/suits/linen/pink/", "volume": 380 },
+  { "path": "/men/tuxedos/black/shawl-lapel/", "volume": 360 },
+  { "path": "/men/suits/wool/navy/", "volume": 360 },
+  { "path": "/men/dress-shirts/slim-fit/luxury/", "volume": 360 },
+  { "path": "/women/suits/business/affordable/", "volume": 350 },
+  { "path": "/men/dress-shirts/white/tailored/", "volume": 350 },
+  { "path": "/men/dress-shirts/formal/grey/gray/", "volume": 350 },
+  { "path": "/men/blazers-sportcoats/tweed/blue/", "volume": 350 },
+  { "path": "/men/tuxedos/white/double-breasted/", "volume": 340 },
+  { "path": "/men/tuxedos/prom/red/", "volume": 340 },
+  { "path": "/men/tuxedos/affordable/", "volume": 340 },
+  { "path": "/men/suits/business/grey/gray/", "volume": 340 },
+  { "path": "/men/pants-trousers/corduroy/pink/", "volume": 340 },
+  { "path": "/men/pants-trousers/business/green/", "volume": 340 },
+  { "path": "/men/dress-shirts/linen/luxury/", "volume": 340 },
+  { "path": "/men/cufflinks/gold/", "volume": 340 },
+  { "path": "/men/blazers-sportcoats/velvet/double-breasted/", "volume": 340 },
+  { "path": "/men/blazers-sportcoats/blue/dinner-jacket/", "volume": 340 },
+  { "path": "/men/shoes/grey/gray/", "volume": 330 },
+  { "path": "/men/tuxedos/wedding/gold/", "volume": 320 },
+  { "path": "/men/tuxedos/black/slim-fit/", "volume": 320 },
+  { "path": "/men/suits/business/navy/", "volume": 320 },
+  { "path": "/men/suits/burgundy/three-piece/", "volume": 320 },
+  { "path": "/men/suits/tweed/burgundy/", "volume": 320 },
+  { "path": "/men/hats/church/", "volume": 320 },
+  { "path": "/men/dress-shirts/business/black/", "volume": 320 },
+  { "path": "/boys/tuxedos/white/", "volume": 320 },
+  { "path": "/boys/shoes/prom/", "volume": 320 },
+  { "path": "/men/vests/black/black-tie/", "volume": 300 },
+  { "path": "/men/tuxedos/red/tuxedo-jacket/", "volume": 300 },
+  { "path": "/men/tuxedos/wedding/purple/", "volume": 300 },
+  { "path": "/men/tuxedos/navy/tuxedo-jacket/", "volume": 300 },
+  { "path": "/men/tuxedos/black/notch-lapel/", "volume": 300 },
+  { "path": "/men/ties-bowties/wool/", "volume": 300 },
+  { "path": "/men/ties-bowties/prom/", "volume": 300 },
+  { "path": "/men/shoes/prom/black/", "volume": 300 },
+  { "path": "/men/shoes/prom/red/", "volume": 300 },
+  { "path": "/men/pants-trousers/grey/slim-fit/gray/", "volume": 300 },
+  { "path": "/boys/blazers-sportcoats/linen/", "volume": 300 },
+  { "path": "/boys/blazers-sportcoats/blue/", "volume": 300 },
+  { "path": "/men/blazers-sportcoats/silk/", "volume": 300 },
+  { "path": "/men/suits/black/slim-fit/", "volume": 280 },
+  { "path": "/men/suits/black/three-piece/", "volume": 280 },
+  { "path": "/boys/suits/green/", "volume": 280 },
+  { "path": "/men/blazers-sportcoats/wool/navy/", "volume": 270 },
+  { "path": "/men/suits/wedding/affordable/", "volume": 260 },
+  { "path": "/men/tuxedos/velvet/black/tuxedo-jacket/", "volume": 250 },
+  { "path": "/men/ties-bowties/satin/", "volume": 250 },
+  { "path": "/men/suits/linen/two-piece/", "volume": 250 },
+  { "path": "/men/suits/dinner-jacket/", "volume": 250 },
+  { "path": "/men/suits/tweed/blue/", "volume": 250 },
+  { "path": "/men/suits/tweed/black/", "volume": 250 },
+  { "path": "/men/shoes/cotton/", "volume": 250 },
+  { "path": "/men/pants-trousers/interview/", "volume": 250 },
+  { "path": "/men/dress-shirts/big-and-tall/luxury/", "volume": 250 },
+  { "path": "/men/dress-shirts/formal/red/", "volume": 250 },
+  { "path": "/men/blazers-sportcoats/skinny-fit/", "volume": 220 },
+  { "path": "/women/blazers-sportcoats/wool/navy/", "volume": 200 },
+  { "path": "/men/tuxedos/wedding/double-breasted/", "volume": 200 },
+  { "path": "/men/tuxedos/purple/tuxedo-jacket/", "volume": 200 },
+  { "path": "/men/tuxedos/velvet/green/tuxedo-jacket/", "volume": 200 },
+  { "path": "/men/tuxedos/burgundy/tuxedo-jacket/", "volume": 200 },
+  { "path": "/men/ties-bowties/silk/purple/", "volume": 200 },
+  { "path": "/men/ties-bowties/silk/burgundy/", "volume": 200 },
+  { "path": "/men/ties-bowties/tweed/", "volume": 200 },
+  { "path": "/men/suits/wedding/linen/tan/", "volume": 200 },
+  { "path": "/men/suits/prom/tan/", "volume": 200 },
+  { "path": "/men/suits/tweed/pink/", "volume": 200 },
+  { "path": "/men/suits/wool/green/", "volume": 200 },
+  { "path": "/men/suits/slim-fit/double-breasted/", "volume": 200 },
+  { "path": "/men/suits/blue/slim-fit/", "volume": 200 },
+  { "path": "/men/suits/black/big-and-tall/", "volume": 200 },
+  { "path": "/men/shoes/wedding/navy/", "volume": 200 },
+  { "path": "/men/shoes/interview/", "volume": 200 },
+  { "path": "/men/pocket-squares/silk/white/", "volume": 200 },
+  { "path": "/men/dress-shirts/purple/luxury/", "volume": 200 },
+  { "path": "/men/dress-shirts/wedding/burgundy/", "volume": 200 },
+  { "path": "/men/dress-shirts/silk/luxury/", "volume": 200 },
+  { "path": "/men/dress-shirts/cotton/pink/", "volume": 200 },
+  { "path": "/boys/pants-trousers/linen/white/", "volume": 200 },
+  { "path": "/men/blazers-sportcoats/red/dinner-jacket/", "volume": 200 },
+  { "path": "/men/blazers-sportcoats/white/double-breasted/", "volume": 200 },
+  { "path": "/men/blazers-sportcoats/wedding/white/dinner-jacket/", "volume": 200 },
+  { "path": "/men/blazers-sportcoats/black/slim-fit/", "volume": 190 },
+  { "path": "/men/vests/tweed/brown/", "volume": 180 },
+  { "path": "/men/vests/velvet/", "volume": 180 },
+  { "path": "/men/shoes/casual/grey/gray/", "volume": 180 },
+  { "path": "/men/shoes/white/luxury/", "volume": 170 },
+  { "path": "/men/shoes/wedding/luxury/", "volume": 170 },
+  { "path": "/men/pants-trousers/wool/black/", "volume": 170 },
+  { "path": "/men/suits/wedding/luxury/", "volume": 160 },
+  { "path": "/men/pants-trousers/cotton/white/", "volume": 160 },
+  { "path": "/men/belts/business/", "volume": 160 },
+  { "path": "/women/suits/business/two-piece/", "volume": 150 },
+  { "path": "/men/tuxedos/big-and-tall/tuxedo-jacket/", "volume": 150 },
+  { "path": "/men/tuxedos/black/peak-lapel/", "volume": 150 },
+  { "path": "/men/tuxedos/wedding/beige/", "volume": 150 },
+  { "path": "/men/ties-bowties/linen/", "volume": 150 },
+  { "path": "/men/ties-bowties/wedding/navy/", "volume": 150 },
+  { "path": "/men/ties-bowties/tan/", "volume": 150 },
+  { "path": "/men/suits/white/slim-fit/", "volume": 150 },
+  { "path": "/men/suits/wedding/big-and-tall/", "volume": 150 },
+  { "path": "/men/suits/wedding/velvet/", "volume": 150 },
+  { "path": "/men/suits/big-and-tall/three-piece/", "volume": 150 },
+  { "path": "/men/suits/red/double-breasted/", "volume": 150 },
+  { "path": "/men/suits/wedding/purple/", "volume": 150 },
+  { "path": "/men/suits/navy/two-piece/", "volume": 150 },
+  { "path": "/men/suits/tweed/navy/", "volume": 150 },
+  { "path": "/men/suits/business/blue/", "volume": 150 },
+  { "path": "/men/suits/silk/black/black-tie/", "volume": 150 },
+  { "path": "/men/suits/beige/double-breasted/", "volume": 150 },
+  { "path": "/men/shoes/affordable/", "volume": 150 },
+  { "path": "/men/shoes/velvet/burgundy/", "volume": 150 },
+  { "path": "/men/shoes/purple/luxury/", "volume": 150 },
+  { "path": "/men/shoes/party/", "volume": 150 },
+  { "path": "/men/shoes/prom/purple/", "volume": 150 },
+  { "path": "/men/pants-trousers/cotton/black/", "volume": 150 },
+  { "path": "/men/pants-trousers/polyester/black/", "volume": 150 },
+  { "path": "/men/pants-trousers/slim-fit/luxury/", "volume": 150 },
+  { "path": "/men/pants-trousers/graduation/", "volume": 150 },
+  { "path": "/men/pants-trousers/business/slim-fit/", "volume": 150 },
+  { "path": "/men/pants-trousers/velvet/purple/", "volume": 150 },
+  { "path": "/men/pants-trousers/business/white/", "volume": 150 },
+  { "path": "/men/dress-shirts/formal/big-and-tall/", "volume": 150 },
+  { "path": "/men/dress-shirts/white/big-and-tall/", "volume": 150 },
+  { "path": "/men/dress-shirts/silk/black/", "volume": 150 },
+  { "path": "/men/dress-shirts/cotton/luxury/", "volume": 150 },
+  { "path": "/boys/dress-shirts/blue/", "volume": 150 },
+  { "path": "/boys/tuxedos/black/", "volume": 150 },
+  { "path": "/boys/suits/beige/", "volume": 150 },
+  { "path": "/men/blazers-sportcoats/green/dinner-jacket/", "volume": 150 },
+  { "path": "/men/blazers-sportcoats/velvet/green/dinner-jacket/", "volume": 150 },
+  { "path": "/men/blazers-sportcoats/red/double-breasted/", "volume": 150 },
+  { "path": "/men/blazers-sportcoats/brown/double-breasted/", "volume": 150 },
+  { "path": "/men/blazers-sportcoats/linen/brown/", "volume": 150 },
+  { "path": "/men/blazers-sportcoats/velvet/brown/", "volume": 150 },
+  { "path": "/men/blazers-sportcoats/wool/brown/", "volume": 150 },
+  { "path": "/men/blazers-sportcoats/gold/double-breasted/", "volume": 150 },
+  { "path": "/men/belts/grey/gray/", "volume": 150 },
+  { "path": "/men/suits/white/three-piece/", "volume": 140 },
+  { "path": "/men/dress-shirts/wedding/linen/", "volume": 140 },
+  { "path": "/men/suits/funeral/grey/gray/", "volume": 130 },
+  { "path": "/men/blazers-sportcoats/cotton/white/", "volume": 100 }
+];
+
+const formatVolume = (vol) => {
+  if (typeof vol !== 'number') return '0';
+  if (vol >= 1000000000) return (vol / 1000000000).toFixed(1) + 'B';
+  if (vol >= 1000000) return (vol / 1000000).toFixed(1) + 'M';
+  if (vol >= 1000) return (vol / 1000).toFixed(1) + 'K';
+  return vol.toString();
+};
+
+/**
+ * Normalizes segments by:
+ * 1. Mapping 'gray' and 'grey' to 'grey-gray'
+ * 2. Removing multiple identical color markers in a single branch to prevent recursive nesting.
+ */
+const normalizeSegments = (path) => {
+  // Handle case where path might be an object instead of a string
+  const rawPath = typeof path === 'string' ? path : Object.values(path).join('');
+  const raw = rawPath.split('/').filter(Boolean);
+  const result = [];
+  const seenColors = new Set();
+  
+  raw.forEach(s => {
+    let segment = s;
+    // Standardize gray/grey
+    if (s === 'gray' || s === 'grey') {
+      segment = 'grey-gray';
+    }
+    
+    // Collapse redundant color markers in a single path
+    if (segment === 'grey-gray') {
+      if (seenColors.has('grey-gray')) return;
+      seenColors.add('grey-gray');
+    }
+    
+    result.push(segment);
+  });
+  return result;
+};
+
+const buildTree = (hubsData, moneyData) => {
+  const root = { name: 'The Suit Depot Storefront', children: {}, path: '/', volume: 0, nodeType: 'root' };
+  
+  const processItems = (data, type) => {
+    data.forEach(item => {
+      const segments = normalizeSegments(item.path);
+      let current = root;
+      segments.forEach((segment, index) => {
+        const isLast = index === segments.length - 1;
+        const fullPath = '/' + segments.slice(0, index + 1).join('/') + '/';
+        
+        if (!current.children[segment]) {
+          current.children[segment] = { 
+            name: segment, 
+            children: {}, 
+            path: fullPath,
+            volume: isLast ? item.volume : 0,
+            nodeType: isLast ? type : 'segment'
+          };
+        } else if (isLast) {
+          // If normalization merged two paths, take the higher volume and prioritize 'money' or 'hub' over 'segment'
+          current.children[segment].volume = Math.max(current.children[segment].volume || 0, item.volume);
+          if (type !== 'segment') {
+             current.children[segment].nodeType = type;
+          }
+        }
+        current = current.children[segment];
+      });
+    });
+  };
+
+  processItems(hubsData, 'hub');
+  processItems(moneyData, 'money');
+
+  return root;
+};
+
+const TreeNode = ({ node, depth = 0, searchTerm = '', defaultExpanded = false }) => {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded || searchTerm.length > 0 || depth < 1);
+  const childrenKeys = Object.keys(node.children);
+  const hasChildren = childrenKeys.length > 0;
+  
+  const matches = node.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const childMatches = childrenKeys.some(key => 
+    key.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    node.children[key].name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (searchTerm && !matches && !childMatches && depth > 0) return null;
+
+  const nodeName = node.name.replace(/-/g, ' ');
+
+  const sortedKeys = childrenKeys.sort((a, b) => {
+    const aNode = node.children[a];
+    const bNode = node.children[b];
+    // Put Hubs first, then high-volume money pages
+    if (aNode.nodeType === 'hub' && bNode.nodeType !== 'hub') return -1;
+    if (aNode.nodeType !== 'hub' && bNode.nodeType === 'hub') return 1;
+    return bNode.volume - aNode.volume;
+  });
+
+  const nodeIcon = () => {
+    if (node.nodeType === 'hub') return <Compass size={14} className="text-indigo-600" />;
+    if (node.nodeType === 'money') return <Target size={14} className="text-emerald-500" />;
+    return <Layers size={14} className="text-slate-300" />;
+  };
+
+  return (
+    <div className="select-none">
+      <div 
+        className={`flex items-center justify-between py-2 px-3 transition-all cursor-pointer group rounded-lg mb-0.5
+          ${matches && searchTerm ? 'bg-indigo-50 dark:bg-indigo-900/20 ring-1 ring-indigo-100' : 'hover:bg-slate-50 dark:hover:bg-gray-800'}
+          ${node.nodeType === 'money' ? 'border-l-4 border-emerald-500 bg-emerald-50/10' : node.nodeType === 'hub' ? 'border-l-4 border-indigo-600 bg-indigo-50/10' : 'border-l-4 border-transparent'}
+        `}
+        style={{ marginLeft: `${depth * 1.2}rem` }}
+        onClick={() => setIsExpanded(!hasChildren ? false : !isExpanded)}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-4 h-4 flex items-center justify-center">
+            {hasChildren ? (
+              isExpanded ? <ChevronDown size={14} className="text-slate-400" /> : <ChevronRight size={14} className="text-slate-400" />
+            ) : <CornerDownRight size={12} className="text-slate-300" />}
+          </div>
+          
+          <div className="flex items-center gap-2">
+            {nodeIcon()}
+            <span className={`text-sm capitalize tracking-tight 
+              ${node.nodeType === 'money' ? 'font-black text-emerald-900 dark:text-emerald-400' : 
+                node.nodeType === 'hub' ? 'font-black text-indigo-700' : 'font-medium text-slate-500'}
+            `}>
+              {nodeName}
+            </span>
+            {node.volume > 0 && (
+              <span className={`flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full leading-none shadow-sm ${node.nodeType === 'money' ? 'bg-emerald-600 text-white' : 'bg-indigo-600 text-white'}`}>
+                <TrendingUp size={10} /> {formatVolume(node.volume)}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+           <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">
+             {node.nodeType === 'money' ? 'Collection' : node.nodeType === 'hub' ? 'Pillar Hub' : 'Path Segment'}
+           </span>
+        </div>
+      </div>
+
+      {hasChildren && isExpanded && (
+        <div className="mt-0.5 border-l border-slate-100 dark:border-slate-800 ml-2">
+          {sortedKeys.map(key => (
+            <TreeNode 
+              key={node.children[key].path} 
+              node={node.children[key]} 
+              depth={depth + 1} 
+              searchTerm={searchTerm}
+              defaultExpanded={defaultExpanded}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const App = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [allExpanded, setAllExpanded] = useState(false);
+  const tree = useMemo(() => buildTree(hubs, moneyPages), []);
+
+  const stats = useMemo(() => {
+    return {
+      collections: moneyPages.length,
+      hubs: hubs.length,
+      topVolume: hubs.find(h => h.path === '/men/suits/')?.volume || 0
+    };
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-[#F1F5F9] dark:bg-black p-4 md:p-8 font-sans text-slate-900">
+      <div className="max-w-6xl mx-auto">
+        
+        {/* Advanced Header */}
+        <div className="mb-8 flex flex-col md:flex-row justify-between items-end gap-6 bg-white dark:bg-gray-950 p-8 rounded-[2rem] border border-slate-200 dark:border-gray-800 shadow-xl">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 px-3 py-1 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full w-fit shadow-lg">
+              <Zap size={12} />
+              Sitemap Visualizer v10.1
+            </div>
+            <h1 className="text-5xl font-black tracking-tighter dark:text-white uppercase leading-none">
+              The Suit Depot <span className="text-indigo-600">Taxonomy</span>
+            </h1>
+            <p className="text-slate-500 text-sm font-medium max-w-xl leading-relaxed">
+              Consolidated SEO matrix. Pillars (Indigo) manage link equity, while Collections (Emerald) target granular search intents. <strong>Gray/Grey intents are merged</strong> to prevent redundant indexing.
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-6">
+            <div className="flex flex-col items-end border-r border-slate-200 pr-6 text-right">
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Suits Authority</span>
+               <span className="text-4xl font-black text-indigo-600">{formatVolume(stats.topVolume)} <span className="text-sm">MSV</span></span>
+            </div>
+            <div className="flex flex-col items-end text-right">
+               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Money Intent Landing Pages</span>
+               <span className="text-4xl font-black text-emerald-600">{stats.collections}+</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Global Controls */}
+        <div className="flex gap-4 mb-6">
+          <div className="relative flex-1 group">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+            <input 
+              type="text"
+              placeholder="Search taxonomy (e.g., 'Size-42', 'Velvet', 'Grey Gray')..."
+              className="w-full pl-14 pr-6 py-5 bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-2xl shadow-sm outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all text-base font-bold"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <button 
+            onClick={() => setAllExpanded(!allExpanded)}
+            className="px-8 py-5 bg-slate-900 dark:bg-white text-white dark:text-black rounded-2xl text-xs font-black uppercase tracking-widest transition-all active:scale-95 flex items-center gap-3 shadow-2xl hover:bg-slate-800"
+          >
+            {allExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+            {allExpanded ? 'Collapse' : 'Expand All'}
+          </button>
+        </div>
+
+        {/* Sitemap Tree View */}
+        <div className="bg-white dark:bg-gray-950 rounded-[3rem] shadow-2xl border border-slate-200 dark:border-gray-800 overflow-hidden mb-12">
+          <div className="p-6 bg-slate-50 dark:bg-gray-900/50 border-b border-slate-100 dark:border-gray-800 flex items-center justify-between">
+            <div className="flex items-center gap-3 text-[11px] font-black uppercase text-slate-500 tracking-wider">
+               <BarChart4 size={20} className="text-indigo-600" />
+               Indexable Architecture Tree
+            </div>
+            <div className="flex items-center gap-8">
+               <div className="flex items-center gap-2">
+                 <Compass size={12} className="text-indigo-600" />
+                 <span className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase">Pillar Hub</span>
+               </div>
+               <div className="flex items-center gap-2">
+                 <Target size={12} className="text-emerald-500" />
+                 <span className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase">Money collection</span>
+               </div>
+            </div>
+          </div>
+          <div className="p-8 overflow-y-auto max-h-[75vh] custom-scrollbar">
+            <TreeNode 
+              node={tree} 
+              searchTerm={searchTerm} 
+              defaultExpanded={allExpanded}
+            />
+          </div>
+        </div>
+
+        {/* Playbook / Strategy Notes */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+           <div className="bg-indigo-600 p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
+              <Compass size={40} className="mb-6 opacity-30" />
+              <h4 className="text-xl font-black uppercase tracking-tight mb-4 leading-none">Authority<br/>Pillars</h4>
+              <p className="text-xs opacity-80 leading-relaxed font-medium">
+                Pillar Hubs like <code>/men/suits/</code> aggregate billions in MSV. These pages should not contain product grids by default, but rather visual entry points to high-intent collections.
+              </p>
+              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 blur-2xl rounded-full" />
+           </div>
+           <div className="bg-emerald-600 p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
+              <Target size={40} className="mb-6 opacity-30" />
+              <h4 className="text-xl font-black uppercase tracking-tight mb-4 leading-none">Intent<br/>Resolution</h4>
+              <p className="text-xs opacity-90 leading-relaxed font-medium">
+                Every Money Page (Emerald) is an indexable Shopify collection. These match long-tail queries 1:1, including merged synonymous terms like "gray" and "grey".
+              </p>
+              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 blur-2xl rounded-full" />
+           </div>
+           <div className="bg-slate-900 p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
+              <ShoppingBag size={40} className="mb-6 opacity-30" />
+              <h4 className="text-xl font-black uppercase tracking-tight mb-4 leading-none">Shopify<br/>Logic</h4>
+              <p className="text-xs opacity-70 leading-relaxed font-medium">
+                Implement via <strong>Automated Collections</strong>. Use multiple tag filters (e.g. <code>Men</code> + <code>Suits</code> + <code>Grey</code> + <code>Size:42</code>) to populate landing pages dynamically.
+              </p>
+              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 blur-2xl rounded-full" />
+           </div>
+        </div>
+      </div>
+
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #CBD5E1;
+          border-radius: 10px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #334155;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default App;
